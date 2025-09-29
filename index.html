@@ -333,53 +333,60 @@
                 container.id = 'daily-data-view';
                 container.className = 'space-y-4 px-2';
 
-                if (Object.keys(data).length === 0) {
+                const sectionsHTML = [];
+
+                if (data.medications?.length) {
+                    const medicationContent = data.medications.map(item => `
+                        <div class="flex justify-between items-center">
+                            <span>${item.name} <span class="text-xs text-slate-400">${item.dosage || ''}</span></span>
+                            <div class="flex items-center space-x-2">
+                                <button data-action="toggle-med" data-id="${item.id}" class="${item.taken ? 'text-green-400' : 'text-slate-500'} hover:text-green-300"><i data-lucide="check-circle-2"></i></button>
+                                <button data-action="delete-item" data-type="medications" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    `);
+                    sectionsHTML.push(createSection('Remédios', 'pilcrow', 'blue', medicationContent));
+                }
+
+                if (data.appointments?.length) {
+                    const appointmentContent = data.appointments.map(item => `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p>${item.specialty}</p>
+                                <p class="text-xs text-slate-400">${item.doctor || ''} - ${item.notes || ''}</p>
+                            </div>
+                            <button data-action="delete-item" data-type="appointments" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `);
+                    sectionsHTML.push(createSection('Consultas', 'stethoscope', 'purple', appointmentContent));
+                }
+
+                if (data.symptoms?.length) {
+                    const symptomContent = data.symptoms.map(item => `
+                        <div class="flex justify-between items-center">
+                            <span>${item.name}</span>
+                            <button data-action="delete-item" data-type="symptoms" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `);
+                    sectionsHTML.push(createSection('Sintomas', 'thermometer', 'red', symptomContent));
+                }
+
+                if (data.diary) {
+                    const diaryContent = `<p class="text-slate-300 whitespace-pre-wrap">${data.diary}</p>
+                        <button data-action="delete-item" data-type="diary" data-id="diary" class="text-slate-500 hover:text-red-400 absolute top-4 right-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    `;
+                    sectionsHTML.push(createSection('Diário', 'book-open', 'yellow', diaryContent, 'relative'));
+                }
+                
+                if (sectionsHTML.length > 0) {
+                    container.innerHTML = sectionsHTML.join('');
+                } else {
                     container.innerHTML = `
                         <div class="text-center py-10 px-4 bg-slate-800/80 border border-slate-700 rounded-2xl">
                             <i data-lucide="inbox" class="w-16 h-16 mx-auto text-slate-500 mb-4"></i>
                             <p class="text-slate-400">Nenhum registro para este dia.</p>
                              <p class="text-slate-500 text-sm">Use o botão '+' para adicionar.</p>
                         </div>`;
-                    return container;
-                }
-
-                if (data.medications?.length) {
-                    container.innerHTML += createSection('Remédios', 'pilcrow', 'blue', data.medications.map(item => `
-                        <div class="flex justify-between items-center">
-                            <span>${item.name} <span class="text-xs text-slate-400">${item.dosage}</span></span>
-                            <div class="flex items-center space-x-2">
-                                <button data-action="toggle-med" data-id="${item.id}" class="${item.taken ? 'text-green-400' : 'text-slate-500'} hover:text-green-300"><i data-lucide="check-circle-2"></i></button>
-                                <button data-action="delete-item" data-type="medications" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                            </div>
-                        </div>
-                    `));
-                }
-
-                if (data.appointments?.length) {
-                    container.innerHTML += createSection('Consultas', 'stethoscope', 'purple', data.appointments.map(item => `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p>${item.specialty}</p>
-                                <p class="text-xs text-slate-400">${item.doctor} - ${item.notes}</p>
-                            </div>
-                            <button data-action="delete-item" data-type="appointments" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    `));
-                }
-
-                if (data.symptoms?.length) {
-                    container.innerHTML += createSection('Sintomas', 'thermometer', 'red', data.symptoms.map(item => `
-                        <div class="flex justify-between items-center">
-                            <span>${item.name}</span>
-                            <button data-action="delete-item" data-type="symptoms" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    `));
-                }
-
-                if (data.diary) {
-                     container.innerHTML += createSection('Diário', 'book-open', 'yellow', `<p class="text-slate-300 whitespace-pre-wrap">${data.diary}</p>
-                        <button data-action="delete-item" data-type="diary" data-id="diary" class="text-slate-500 hover:text-red-400 absolute top-4 right-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                     `, 'relative');
                 }
 
                 return container;
@@ -561,16 +568,22 @@
                 }
 
                 const entry = { id: Date.now() };
-                formData.forEach((value, key) => entry[key] = value);
+                formData.forEach((value, key) => {
+                    if (value) { // Only add non-empty values
+                        entry[key] = value;
+                    }
+                });
+
 
                 if(type === 'diary') {
                     state.healthData[dateStr].diary = entry.entry;
                 } else {
-                    if (!state.healthData[dateStr][type]) {
-                        state.healthData[dateStr][type] = [];
+                    const pluralType = type + 's'; // BUG FIX: Use plural form for consistency
+                    if (!state.healthData[dateStr][pluralType]) {
+                        state.healthData[dateStr][pluralType] = [];
                     }
                     if (type === 'medication') entry.taken = false;
-                    state.healthData[dateStr][type].push(entry);
+                    state.healthData[dateStr][pluralType].push(entry);
                 }
 
                 saveData();
@@ -621,7 +634,7 @@
                     const systemPrompt = "Você é um assistente de saúde farmacêutico. Sua função é explicar para que servem os medicamentos de forma clara, simples e concisa para um paciente leigo. Responda em português do Brasil. Comece com o nome do medicamento em negrito. Em seguida, explique o propósito principal, como é comumente usado, e mencione 1 ou 2 efeitos colaterais comuns a se observar. Mantenha a resposta curta, no máximo 3 parágrafos. Aja sempre com neutralidade e informe que o usuário deve consultar um médico.";
 
                     const apiKey = "AIzaSyCiEXw3OWUWZfTi32NfTa93-HdAFdSzQhI"; // Canvas will provide it
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                    const apiUrl = `https://generativelaunguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
                     const payload = {
                         contents: [{ parts: [{ text: `Explique sobre o medicamento: ${medicationName}` }] }],
