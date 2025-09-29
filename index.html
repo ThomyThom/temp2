@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+
+<head>
+    <meta charset="UTF--8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diário de Saúde</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@0.378.0/dist/umd/lucide.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a; /* slate-900 */
+            background-image: radial-gradient(circle at top right, rgb(30 58 138 / 0.5), #0f172a 40%);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #475569; /* slate-600 */
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* slate-500 */
+        }
+
+        /* Modal Animation */
+        .modal-enter {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Add button pulse animation */
+        .pulse-shadow {
+            animation: pulse-shadow 2.5s infinite;
+        }
+        @keyframes pulse-shadow {
+            0% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.6); }
+            70% { box-shadow: 0 0 0 10px rgba(20, 184, 166, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(20, 184, 166, 0); }
+        }
+
+        /* Style for modal choices */
+         .modal-choice-button {
+            background-color: #334155; /* slate-700 */
+            padding: 1rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            text-align: center;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid #475569; /* slate-600 */
+        }
+        .modal-choice-button:hover {
+            transform: translateY(-4px);
+            background-color: #475569; /* slate-600 */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.2), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+    </style>
+</head>
+
+<body class="text-slate-100 flex flex-col h-screen">
+
+    <!-- Header -->
+    <header class="bg-slate-900/70 backdrop-blur-sm p-4 border-b border-slate-700 fixed top-0 left-0 right-0 z-20">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-400"><path d="M20.2 10.2a5 5 0 0 0-5-5h-2.4a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 18a5 5 0 0 0 5-5h2.4a5 5 0 0 0 5 5v2.4a5 5 0 0 0-5 5h-2.4a5 5 0 0 0-5-5Z"/><path d="M12 6a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 12a5 5 0 0 0-5-5H4.8a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/></svg>
+                <h1 class="text-xl font-bold text-white">Diário de Saúde</h1>
+            </div>
+            <div id="current-date-display" class="text-sm bg-slate-700 px-3 py-1 rounded-full text-slate-300"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content" class="flex-1 max-w-4xl w-full mx-auto pt-24 pb-24 overflow-y-auto">
+        <!-- Content will be dynamically injected here -->
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bg-slate-900/70 backdrop-blur-sm border-t border-slate-700 fixed bottom-0 left-0 right-0 z-20">
+        <div class="max-w-4xl mx-auto flex justify-around">
+            <button data-tab="calendar" class="nav-button flex-1 flex flex-col items-center p-3 text-teal-400">
+                <i data-lucide="calendar-days"></i>
+                <span class="text-xs mt-1">Calendário</span>
+            </button>
+            <button data-tab="add_entry" class="flex-1 flex flex-col items-center p-3 text-slate-400 hover:text-white transform hover:scale-110 transition-transform">
+                 <div class="bg-teal-500 rounded-full p-3 -mt-8 shadow-lg shadow-teal-500/30 border-4 border-slate-800 pulse-shadow">
+                    <i data-lucide="plus" class="text-white"></i>
+                </div>
+                <span class="text-xs mt-1">Adicionar</span>
+            </button>
+            <button data-tab="ai_assistant" class="nav-button flex-1 flex flex-col items-center p-3 text-slate-400 hover:text-white">
+                <i data-lucide="bot"></i>
+                <span class="text-xs mt-1">Assistente IA</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Modals -->
+    <div id="modal-backdrop" class="fixed inset-0 bg-black/70 z-40 hidden"></div>
+    
+    <!-- Add Entry Choice Modal -->
+    <div id="add-entry-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-enter">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl w-full max-w-md p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold">Adicionar Novo Registro</h2>
+                <button id="close-add-entry-modal" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <button data-form="medication" class="modal-choice-button">
+                    <i data-lucide="pilcrow" class="w-8 h-8 mx-auto mb-2 text-blue-400"></i> Remédio
+                </button>
+                <button data-form="appointment" class="modal-choice-button">
+                    <i data-lucide="stethoscope" class="w-8 h-8 mx-auto mb-2 text-purple-400"></i> Consulta
+                </button>
+                <button data-form="symptom" class="modal-choice-button">
+                    <i data-lucide="thermometer" class="w-8 h-8 mx-auto mb-2 text-red-400"></i> Sintoma
+                </button>
+                <button data-form="diary" class="modal-choice-button">
+                    <i data-lucide="book-open" class="w-8 h-8 mx-auto mb-2 text-yellow-400"></i> Diário
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Generic Form Modal -->
+    <div id="form-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-enter">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl w-full max-w-md">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 id="form-modal-title" class="text-xl font-semibold"></h2>
+                    <button id="close-form-modal" class="text-slate-400 hover:text-white"><i data-lucide="x"></i></button>
+                </div>
+                <form id="entry-form" class="space-y-4">
+                    <!-- Form content will be injected here -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- DATE HELPERS (CRITICAL FOR BUG FIX) ---
+            const toISODateString = (date) => {
+                // This function ensures the date is treated consistently in the user's local timezone.
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            const getTodayNormalized = () => {
+                // Creates a date for today, but sets the time to midnight.
+                // This prevents bugs where the time of day affects which date is stored.
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return today;
+            };
+
+            // --- STATE MANAGEMENT ---
+            let state = {
+                currentDate: getTodayNormalized(),
+                healthData: {}, // { "YYYY-MM-DD": { ... } }
+                currentTab: 'calendar'
+            };
+
+            // --- CONSTANTS & CONFIG ---
+            const mainContent = document.getElementById('main-content');
+            const currentDateDisplay = document.getElementById('current-date-display');
+            const navButtons = document.querySelectorAll('.nav-button');
+            const addEntryButton = document.querySelector('button[data-tab="add_entry"]');
+            
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const addEntryModal = document.getElementById('add-entry-modal');
+            const closeAddEntryModal = document.getElementById('close-add-entry-modal');
+            const modalChoiceButtons = document.querySelectorAll('.modal-choice-button');
+            
+            const formModal = document.getElementById('form-modal');
+            const formModalTitle = document.getElementById('form-modal-title');
+            const entryForm = document.getElementById('entry-form');
+            const closeFormModal = document.getElementById('close-form-modal');
+            
+            const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+
+            const colorGradients = {
+                'blue': 'from-blue-500/60',
+                'purple': 'from-purple-500/60',
+                'red': 'from-red-500/60',
+                'yellow': 'from-yellow-500/60'
+            };
+
+            // --- DATA PERSISTENCE ---
+            const loadData = () => {
+                const data = localStorage.getItem('healthDataV1');
+                state.healthData = data ? JSON.parse(data) : {};
+            };
+
+            const saveData = () => {
+                localStorage.setItem('healthDataV1', JSON.stringify(state.healthData));
+                render(); // Re-render after any data change
+            };
+
+            // --- UI RENDERING ---
+
+            const render = () => {
+                lucide.createIcons();
+                updateCurrentDateDisplay();
+                renderTabContent();
+                updateNavButtons();
+            };
+            
+            const updateNavButtons = () => {
+                navButtons.forEach(btn => {
+                    if (btn.dataset.tab === state.currentTab) {
+                        btn.classList.remove('text-slate-400', 'hover:text-white');
+                        btn.classList.add('text-teal-400');
+                    } else {
+                        btn.classList.add('text-slate-400', 'hover:text-white');
+                        btn.classList.remove('text-teal-400');
+                    }
+                });
+            };
+
+            const renderTabContent = () => {
+                mainContent.innerHTML = '';
+                switch (state.currentTab) {
+                    case 'calendar':
+                        mainContent.appendChild(createCalendarView());
+                        mainContent.appendChild(createDataForDateView(state.currentDate));
+                        break;
+                    case 'ai_assistant':
+                        mainContent.appendChild(createAIAssistantView());
+                        break;
+                }
+                lucide.createIcons();
+            };
+            
+            const updateCurrentDateDisplay = () => {
+                currentDateDisplay.textContent = state.currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+            };
+            
+            const createCalendarView = () => {
+                const container = document.createElement('div');
+                container.className = 'bg-slate-800/80 p-4 sm:p-6 rounded-2xl mb-6 shadow-lg border border-slate-700';
+                
+                const year = state.currentDate.getFullYear();
+                const month = state.currentDate.getMonth();
+
+                const header = document.createElement('div');
+                header.className = 'flex items-center justify-between mb-4';
+                header.innerHTML = `
+                    <button id="prev-month" class="p-2 rounded-full hover:bg-slate-700"><i data-lucide="chevron-left"></i></button>
+                    <h2 class="text-xl font-semibold">${monthNames[month]} ${year}</h2>
+                    <button id="next-month" class="p-2 rounded-full hover:bg-slate-700"><i data-lucide="chevron-right"></i></button>
+                `;
+
+                const calendarGrid = document.createElement('div');
+                calendarGrid.className = 'calendar-grid gap-1';
+
+                const weekDaysHeader = document.createElement('div');
+                weekDaysHeader.className = 'calendar-grid col-span-7 mb-2';
+                weekDays.forEach(day => {
+                    weekDaysHeader.innerHTML += `<div class="text-center text-xs font-bold text-slate-400">${day}</div>`;
+                });
+
+                const firstDayOfMonth = new Date(year, month, 1);
+                const lastDayOfMonth = new Date(year, month + 1, 0);
+                const startDay = firstDayOfMonth.getDay();
+
+                for (let i = 0; i < startDay; i++) {
+                    calendarGrid.innerHTML += '<div></div>';
+                }
+
+                for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+                    const date = new Date(year, month, day);
+                    const dateStr = toISODateString(date);
+                    const isSelected = toISODateString(state.currentDate) === dateStr;
+                    const isToday = toISODateString(getTodayNormalized()) === dateStr;
+                    const hasData = state.healthData[dateStr];
+
+                    let classes = 'day-cell text-center p-2 rounded-full cursor-pointer transition-colors duration-200 ';
+                    if (isSelected) {
+                        classes += 'bg-gradient-to-br from-teal-500 to-cyan-400 text-white font-bold ring-2 ring-cyan-300 ';
+                    } else if (isToday) {
+                        classes += 'bg-slate-600 text-white ';
+                    } else {
+                        classes += 'hover:bg-slate-700 ';
+                    }
+                    
+                    let dataIndicator = hasData ? '<div class="w-1.5 h-1.5 bg-teal-400 rounded-full mx-auto mt-1"></div>' : '';
+
+                    calendarGrid.innerHTML += `<div data-date="${dateStr}" class="${classes}">${day}${dataIndicator}</div>`;
+                }
+                
+                container.appendChild(header);
+                container.appendChild(weekDaysHeader);
+                container.appendChild(calendarGrid);
+
+                return container;
+            };
+            
+            const createDataForDateView = (date) => {
+                const dateStr = toISODateString(date);
+                const data = state.healthData[dateStr] || {};
+                const container = document.createElement('div');
+                container.id = 'daily-data-view';
+                container.className = 'space-y-4 px-2';
+
+                if (Object.keys(data).length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-10 px-4 bg-slate-800/80 border border-slate-700 rounded-2xl">
+                            <i data-lucide="inbox" class="w-16 h-16 mx-auto text-slate-500 mb-4"></i>
+                            <p class="text-slate-400">Nenhum registro para este dia.</p>
+                             <p class="text-slate-500 text-sm">Use o botão '+' para adicionar.</p>
+                        </div>`;
+                    return container;
+                }
+
+                if (data.medications?.length) {
+                    container.innerHTML += createSection('Remédios', 'pilcrow', 'blue', data.medications.map(item => `
+                        <div class="flex justify-between items-center">
+                            <span>${item.name} <span class="text-xs text-slate-400">${item.dosage}</span></span>
+                            <div class="flex items-center space-x-2">
+                                <button data-action="toggle-med" data-id="${item.id}" class="${item.taken ? 'text-green-400' : 'text-slate-500'} hover:text-green-300"><i data-lucide="check-circle-2"></i></button>
+                                <button data-action="delete-item" data-type="medications" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    `));
+                }
+
+                if (data.appointments?.length) {
+                    container.innerHTML += createSection('Consultas', 'stethoscope', 'purple', data.appointments.map(item => `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p>${item.specialty}</p>
+                                <p class="text-xs text-slate-400">${item.doctor} - ${item.notes}</p>
+                            </div>
+                            <button data-action="delete-item" data-type="appointments" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `));
+                }
+
+                if (data.symptoms?.length) {
+                    container.innerHTML += createSection('Sintomas', 'thermometer', 'red', data.symptoms.map(item => `
+                        <div class="flex justify-between items-center">
+                            <span>${item.name}</span>
+                            <button data-action="delete-item" data-type="symptoms" data-id="${item.id}" class="text-slate-500 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `));
+                }
+
+                if (data.diary) {
+                     container.innerHTML += createSection('Diário', 'book-open', 'yellow', `<p class="text-slate-300 whitespace-pre-wrap">${data.diary}</p>
+                        <button data-action="delete-item" data-type="diary" data-id="diary" class="text-slate-500 hover:text-red-400 absolute top-4 right-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                     `, 'relative');
+                }
+
+                return container;
+            };
+
+            const createSection = (title, icon, color, content, extraClasses = '') => {
+                const gradientClass = colorGradients[color] || 'from-slate-500/60';
+                return `
+                    <div class="bg-gradient-to-br ${gradientClass} to-slate-800/10 p-0.5 rounded-2xl shadow-lg ${extraClasses}">
+                         <div class="bg-slate-800 rounded-[15px] p-4 h-full">
+                            <h3 class="flex items-center text-lg font-semibold mb-3 text-${color}-400">
+                                <i data-lucide="${icon}" class="w-5 h-5 mr-2"></i>
+                                ${title}
+                            </h3>
+                            <div class="space-y-3 text-sm">${Array.isArray(content) ? content.join('<hr class="border-slate-700">') : content}</div>
+                         </div>
+                    </div>`;
+            };
+            
+            const createAIAssistantView = () => {
+                const container = document.createElement('div');
+                container.className = 'p-4 space-y-4';
+                container.innerHTML = `
+                    <div class="bg-slate-800/80 border border-slate-700 p-6 rounded-2xl text-center shadow-lg">
+                        <i data-lucide="sparkles" class="w-16 h-16 mx-auto text-teal-400 mb-4"></i>
+                        <h2 class="text-2xl font-bold mb-2">Assistente de Saúde IA</h2>
+                        <p class="text-slate-400">Pergunte-me sobre um medicamento para saber para que ele serve.</p>
+                    </div>
+                    <div class="bg-slate-800/80 border border-slate-700 p-4 rounded-2xl shadow-lg">
+                        <div class="flex space-x-2">
+                            <input type="text" id="ai-prompt" placeholder="Digite o nome de um remédio..." class="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none">
+                            <button id="ai-submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors">
+                                <i data-lucide="send"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="ai-response-container" class="bg-slate-800/80 border border-slate-700 p-4 rounded-2xl min-h-[120px] shadow-lg">
+                         <div class="flex space-x-3">
+                            <div class="p-2 bg-gradient-to-br from-teal-500 to-cyan-400 rounded-full h-fit">
+                                <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+                            </div>
+                            <div id="ai-response" class="text-slate-300 whitespace-pre-wrap flex-1 pt-1">Aguardando sua pergunta...</div>
+                         </div>
+                    </div>
+                `;
+                return container;
+            };
+
+            // --- MODAL HANDLING ---
+            const openModal = (modal) => {
+                modalBackdrop.classList.remove('hidden');
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            };
+
+            const closeModal = (modal) => {
+                modalBackdrop.classList.add('hidden');
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            const openFormModal = (type) => {
+                let title = '';
+                let formContent = '';
+                
+                switch (type) {
+                    case 'medication':
+                        title = 'Adicionar Remédio';
+                        formContent = `
+                            <input type="text" name="name" placeholder="Nome do remédio" class="form-input" required>
+                            <input type="text" name="dosage" placeholder="Dosagem (ex: 500mg, 1 comprimido)" class="form-input">
+                            <button type="submit" class="btn-primary">Salvar</button>
+                        `;
+                        break;
+                    case 'appointment':
+                        title = 'Adicionar Consulta';
+                        formContent = `
+                            <input type="text" name="specialty" placeholder="Especialidade (ex: Cardiologista)" class="form-input" required>
+                            <input type="text" name="doctor" placeholder="Nome do(a) médico(a)" class="form-input">
+                            <textarea name="notes" placeholder="Notas da consulta..." class="form-input"></textarea>
+                            <button type="submit" class="btn-primary">Salvar</button>
+                        `;
+                        break;
+                    case 'symptom':
+                        title = 'Adicionar Sintoma';
+                        formContent = `
+                            <input type="text" name="name" placeholder="Qual sintoma você sentiu?" class="form-input" required>
+                            <button type="submit" class="btn-primary">Salvar</button>
+                        `;
+                        break;
+                    case 'diary':
+                        title = 'Escrever no Diário';
+                        const currentText = state.healthData[toISODateString(state.currentDate)]?.diary || '';
+                        formContent = `
+                            <textarea name="entry" placeholder="Como você está se sentindo hoje?" class="form-input" rows="6">${currentText}</textarea>
+                            <button type="submit" class="btn-primary">Salvar</button>
+                        `;
+                        break;
+                }
+                
+                formModalTitle.textContent = title;
+                entryForm.innerHTML = formContent.replace(/class="form-input"/g, 'class="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none"')
+                                                 .replace(/class="btn-primary"/g, 'class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"');
+                
+                entryForm.dataset.type = type;
+                closeModal(addEntryModal);
+                openModal(formModal);
+            };
+
+            // --- EVENT LISTENERS ---
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    state.currentTab = button.dataset.tab;
+                    render();
+                });
+            });
+            
+            addEntryButton.addEventListener('click', () => openModal(addEntryModal));
+            closeAddEntryModal.addEventListener('click', () => closeModal(addEntryModal));
+            modalBackdrop.addEventListener('click', () => {
+                closeModal(addEntryModal);
+                closeModal(formModal);
+            });
+            closeFormModal.addEventListener('click', () => closeModal(formModal));
+
+            modalChoiceButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    openFormModal(button.dataset.form);
+                });
+            });
+            
+            mainContent.addEventListener('click', (e) => {
+                const dayCell = e.target.closest('.day-cell');
+                if (dayCell) {
+                    // This is a more robust way to create a date from a YYYY-MM-DD string, avoiding timezone issues.
+                    const [year, month, day] = dayCell.dataset.date.split('-').map(Number);
+                    state.currentDate = new Date(year, month - 1, day);
+                    render();
+                }
+
+                if (e.target.closest('#prev-month')) {
+                    const currentDay = state.currentDate.getDate();
+                    state.currentDate.setMonth(state.currentDate.getMonth() - 1);
+                    // This handles cases like going from March 31 to February, ensuring it lands on Feb 28/29.
+                    if (state.currentDate.getDate() !== currentDay) {
+                        state.currentDate.setDate(0);
+                    }
+                    render();
+                }
+
+                if (e.target.closest('#next-month')) {
+                    const currentDay = state.currentDate.getDate();
+                    state.currentDate.setMonth(state.currentDate.getMonth() + 1);
+                    if (state.currentDate.getDate() !== currentDay) {
+                       state.currentDate.setDate(0);
+                    }
+                    render();
+                }
+                
+                const actionButton = e.target.closest('button[data-action]');
+                if (actionButton) {
+                    handleDataAction(actionButton);
+                }
+
+                const aiSubmitButton = e.target.closest('#ai-submit');
+                if (aiSubmitButton) {
+                    handleAIAssistant();
+                }
+            });
+            
+            entryForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const type = e.target.dataset.type;
+                const dateStr = toISODateString(state.currentDate);
+
+                if (!state.healthData[dateStr]) {
+                    state.healthData[dateStr] = {};
+                }
+
+                const entry = { id: Date.now() };
+                formData.forEach((value, key) => entry[key] = value);
+
+                if(type === 'diary') {
+                    state.healthData[dateStr].diary = entry.entry;
+                } else {
+                    if (!state.healthData[dateStr][type]) {
+                        state.healthData[dateStr][type] = [];
+                    }
+                    if (type === 'medication') entry.taken = false;
+                    state.healthData[dateStr][type].push(entry);
+                }
+
+                saveData();
+                closeModal(formModal);
+            });
+            
+            const handleDataAction = (button) => {
+                const { action, id, type } = button.dataset;
+                const dateStr = toISODateString(state.currentDate);
+                const dayData = state.healthData[dateStr];
+
+                if (!dayData) return;
+
+                if (action === 'delete-item') {
+                    if (type === 'diary') {
+                        delete dayData.diary;
+                    } else if (dayData[type]) {
+                        dayData[type] = dayData[type].filter(item => item.id != id);
+                        if (dayData[type].length === 0) {
+                            delete dayData[type];
+                        }
+                    }
+                     if (Object.keys(dayData).length === 0) {
+                        delete state.healthData[dateStr];
+                    }
+                }
+
+                if (action === 'toggle-med') {
+                    const med = dayData.medications.find(m => m.id == id);
+                    if (med) med.taken = !med.taken;
+                }
+
+                saveData();
+            };
+
+            const handleAIAssistant = async () => {
+                const promptInput = document.getElementById('ai-prompt');
+                const responseDiv = document.getElementById('ai-response');
+                const submitButton = document.getElementById('ai-submit');
+                const medicationName = promptInput.value.trim();
+
+                if (!medicationName) return;
+                
+                responseDiv.innerHTML = `<div class="flex items-center space-x-2 text-slate-400"><div class="animate-spin rounded-full h-5 w-5 border-b-2 border-teal-400"></div><span>Analisando...</span></div>`;
+                submitButton.disabled = true;
+
+                try {
+                    const systemPrompt = "Você é um assistente de saúde farmacêutico. Sua função é explicar para que servem os medicamentos de forma clara, simples e concisa para um paciente leigo. Responda em português do Brasil. Comece com o nome do medicamento em negrito. Em seguida, explique o propósito principal, como é comumente usado, e mencione 1 ou 2 efeitos colaterais comuns a se observar. Mantenha a resposta curta, no máximo 3 parágrafos. Aja sempre com neutralidade e informe que o usuário deve consultar um médico.";
+
+                    const apiKey = "AIzaSyCiEXw3OWUWZfTi32NfTa93-HdAFdSzQhI"; // Canvas will provide it
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                    const payload = {
+                        contents: [{ parts: [{ text: `Explique sobre o medicamento: ${medicationName}` }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] },
+                    };
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                    if (text) {
+                        // Convert Markdown bold (**text**) to HTML <strong>text</strong> and newlines to <br>
+                        const formattedText = text
+                            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                            .replace(/\n/g, '<br>');
+                        responseDiv.innerHTML = formattedText + "<br><br><strong>Lembre-se:</strong> Esta é uma informação geral. Sempre siga as orientações do seu médico e leia a bula.";
+                    } else {
+                        throw new Error("Resposta da IA inválida.");
+                    }
+
+                } catch (error) {
+                    console.error("AI Assistant Error:", error);
+                    responseDiv.textContent = "Desculpe, não consegui encontrar informações sobre este medicamento. Verifique o nome e tente novamente.";
+                } finally {
+                    submitButton.disabled = false;
+                }
+            };
+            
+            // --- INITIALIZATION ---
+            loadData();
+            render();
+        });
+    </script>
+</body>
+</html>
+
