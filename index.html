@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF--8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diário de Saúde</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -62,7 +62,17 @@
             transform: translateY(-4px);
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
-
+        
+        /* Ajustes para layout de desktop com menu lateral */
+        @media (min-width: 768px) {
+            body {
+                display: flex;
+            }
+            main {
+                height: 100vh;
+                padding-top: 80px; /* Altura do header */
+            }
+        }
     </style>
      <script>
         // Colocado no <head> para evitar "flash" do tema incorreto (FOUC)
@@ -74,36 +84,28 @@
     </script>
 </head>
 
-<body class="text-slate-900 dark:text-slate-100 flex flex-col h-screen">
+<body class="text-slate-900 dark:text-slate-100">
 
-    <!-- Header -->
-    <header class="bg-slate-100/80 dark:bg-slate-900/70 backdrop-blur-sm p-4 border-b border-slate-200 dark:border-slate-700 fixed top-0 left-0 right-0 z-20">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-500"><path d="M20.2 10.2a5 5 0 0 0-5-5h-2.4a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 18a5 5 0 0 0 5-5h2.4a5 5 0 0 0 5 5v2.4a5 5 0 0 0-5 5h-2.4a5 5 0 0 0-5-5Z"/><path d="M12 6a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 12a5 5 0 0 0-5-5H4.8a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/></svg>
-                <h1 class="text-xl font-bold text-slate-900 dark:text-white">Diário de Saúde</h1>
+    <nav class="bg-slate-100/80 dark:bg-slate-900/70 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700 fixed bottom-0 left-0 right-0 z-20
+               md:relative md:border-t-0 md:border-r md:h-screen md:w-64 md:flex md:flex-col md:justify-between md:p-4 transition-transform duration-300 ease-in-out">
+        
+        <div class="hidden md:block">
+            <div class="flex items-center space-x-2 mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-500"><path d="M20.2 10.2a5 5 0 0 0-5-5h-2.4a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 18a5 5 0 0 0 5-5h2.4a5 5 0 0 0 5 5v2.4a5 5 0 0 0-5 5h-2.4a5 5 0 0 0-5-5Z"/><path d="M12 6a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 12a5 5 0 0 0-5-5H4.8a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/></svg>
+                <h1 id="desktop-app-title" class="text-xl font-bold text-slate-900 dark:text-white">Diário de Saúde</h1>
             </div>
-            <div class="flex items-center space-x-4">
-                <div id="current-date-display" class="text-sm bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded-full text-slate-600 dark:text-slate-300 hidden sm:block"></div>
-                <button id="theme-toggle" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700">
-                    <i data-lucide="sun" class="hidden dark:inline-block"></i>
-                    <i data-lucide="moon" class="inline-block dark:hidden"></i>
-                </button>
-            </div>
+             <div id="desktop-nav-buttons" class="space-y-2">
+                </div>
         </div>
-    </header>
 
-    <!-- Main Content -->
-    <main id="main-content" class="flex-1 max-w-4xl w-full mx-auto pt-24 pb-24 overflow-y-auto">
-        <!-- Content will be dynamically injected here -->
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bg-slate-100/80 dark:bg-slate-900/70 backdrop-blur-sm border-t border-slate-200 dark:border-slate-700 fixed bottom-0 left-0 right-0 z-20">
-        <div class="max-w-4xl mx-auto flex justify-around">
+        <div class="max-w-4xl mx-auto flex justify-around md:hidden">
             <button data-tab="calendar" class="nav-button flex-1 flex flex-col items-center p-3 text-teal-500 dark:text-teal-400">
                 <i data-lucide="calendar-days"></i>
                 <span class="text-xs mt-1">Calendário</span>
+            </button>
+            <button data-tab="reminders" class="nav-button flex-1 flex flex-col items-center p-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                <i data-lucide="bell"></i>
+                <span class="text-xs mt-1">Lembretes</span>
             </button>
             <button data-tab="add_entry" class="flex-1 flex flex-col items-center p-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transform hover:scale-110 transition-transform">
                  <div class="bg-teal-500 rounded-full p-3 -mt-8 shadow-lg shadow-teal-500/30 border-4 border-white dark:border-slate-800 pulse-shadow">
@@ -113,15 +115,62 @@
             </button>
             <button data-tab="ai_assistant" class="nav-button flex-1 flex flex-col items-center p-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
                 <i data-lucide="bot"></i>
-                <span class="text-xs mt-1">Assistente IA</span>
+                <span class="text-xs mt-1">Assistente</span>
+            </button>
+             <button data-tab="settings" class="nav-button flex-1 flex flex-col items-center p-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                <i data-lucide="user"></i>
+                <span class="text-xs mt-1">Perfil</span>
+            </button>
+        </div>
+        
+        <div class="hidden md:block">
+            <button id="theme-toggle-desktop" class="w-full flex items-center space-x-2 p-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700">
+                <i data-lucide="sun" class="hidden dark:inline-block"></i>
+                <i data-lucide="moon" class="inline-block dark:hidden"></i>
+                <span>Mudar Tema</span>
             </button>
         </div>
     </nav>
+    
+    <div class="flex-1 flex flex-col h-screen relative">
+        <header class="bg-slate-100/80 dark:bg-slate-900/70 backdrop-blur-sm p-4 border-b border-slate-200 dark:border-slate-700 fixed top-0 left-0 right-0 z-20 md:left-64">
+            <div class="max-w-4xl mx-auto flex justify-between items-center">
+                <div id="header-title-container" class="flex items-center space-x-2 md:hidden">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-500"><path d="M20.2 10.2a5 5 0 0 0-5-5h-2.4a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 18a5 5 0 0 0 5-5h2.4a5 5 0 0 0 5 5v2.4a5 5 0 0 0-5 5h-2.4a5 5 0 0 0-5-5Z"/><path d="M12 6a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/><path d="M12 12a5 5 0 0 0-5-5H4.8a5 5 0 0 0-5 5v2.4a5 5 0 0 0 5 5h2.4a5 5 0 0 0 5-5Z"/></svg>
+                    <h1 id="mobile-app-title" class="text-xl font-bold text-slate-900 dark:text-white">Diário de Saúde</h1>
+                </div>
+                <div id="current-date-display" class="text-sm bg-slate-200 dark:bg-slate-700 px-3 py-1 rounded-full text-slate-600 dark:text-slate-300 hidden sm:block"></div>
+                <button id="theme-toggle" class="p-2 rounded-full text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 md:hidden">
+                    <i data-lucide="sun" class="hidden dark:inline-block"></i>
+                    <i data-lucide="moon" class="inline-block dark:hidden"></i>
+                </button>
+            </div>
+        </header>
 
-    <!-- Modals -->
+        <main id="main-content" class="flex-1 w-full max-w-4xl mx-auto pt-24 pb-28 md:pb-8 overflow-y-auto">
+            </main>
+        
+        <button id="add-entry-fab" class="hidden md:flex absolute bottom-8 right-8 z-30 bg-teal-500 text-white p-4 rounded-full shadow-lg hover:bg-teal-600 transition-all duration-300 transform hover:scale-110">
+            <i data-lucide="plus" class="w-8 h-8"></i>
+        </button>
+
+    </div>
+
     <div id="modal-backdrop" class="fixed inset-0 bg-black/70 z-40 hidden"></div>
     
-    <!-- Add Entry Choice Modal -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-enter">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl w-full max-w-md p-6 text-center">
+            <i data-lucide="heart-pulse" class="w-16 h-16 mx-auto text-teal-500 dark:text-teal-400 mb-4"></i>
+            <h2 class="text-2xl font-bold mb-2">Bem-vindo(a) ao seu Diário de Saúde!</h2>
+            <p class="text-slate-500 dark:text-slate-400 mb-6">Vamos começar com algumas informações básicas.</p>
+            <form id="welcome-form" class="space-y-4">
+                <input type="text" name="name" placeholder="Seu nome" class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" required>
+                <input type="date" name="dob" placeholder="Data de Nascimento" class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none" required>
+                <button type="submit" class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Salvar e Iniciar</button>
+            </form>
+        </div>
+    </div>
+
     <div id="add-entry-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-enter">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl w-full max-w-md p-6">
             <div class="flex justify-between items-center mb-6">
@@ -129,24 +178,22 @@
                 <button id="close-add-entry-modal" class="text-slate-400 hover:text-slate-800 dark:hover:text-white"><i data-lucide="x"></i></button>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <button data-form="medication" class="modal-choice-button bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600">
+                <button data-form="medication" class="modal-choice-button bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">
                     <i data-lucide="pilcrow" class="w-8 h-8 mx-auto mb-2 text-blue-500 dark:text-blue-400"></i> Remédio
                 </button>
-                <button data-form="appointment" class="modal-choice-button bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600">
+                <button data-form="appointment" class="modal-choice-button bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">
                     <i data-lucide="stethoscope" class="w-8 h-8 mx-auto mb-2 text-purple-500 dark:text-purple-400"></i> Consulta
                 </button>
-                <button data-form="symptom" class="modal-choice-button bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600">
+                <button data-form="symptom" class="modal-choice-button bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">
                     <i data-lucide="thermometer" class="w-8 h-8 mx-auto mb-2 text-red-500 dark:text-red-400"></i> Sintoma
                 </button>
-                <button data-form="diary" class="modal-choice-button bg-slate-100 dark:bg-slate-700 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600">
+                <button data-form="diary" class="modal-choice-button bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600">
                     <i data-lucide="book-open" class="w-8 h-8 mx-auto mb-2 text-yellow-500 dark:text-yellow-400"></i> Diário
                 </button>
             </div>
         </div>
     </div>
 
-
-    <!-- Generic Form Modal -->
     <div id="form-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 modal-enter">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl w-full max-w-md">
             <div class="p-6">
@@ -155,457 +202,662 @@
                     <button id="close-form-modal" class="text-slate-400 hover:text-slate-800 dark:hover:text-white"><i data-lucide="x"></i></button>
                 </div>
                 <form id="entry-form" class="space-y-4">
-                    <!-- Form content will be injected here -->
-                </form>
+                    </form>
             </div>
         </div>
     </div>
-
-
+    
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- DATE HELPERS ---
+        const toISODateString = (date) => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+
+        const getTodayNormalized = () => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return today;
+        };
+        
+        const formatReminderDate = (isoDate) => {
+            const date = new Date(isoDate);
+            return date.toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+        };
+    
+        // --- STATE MANAGEMENT ---
+        let state = {
+            currentDate: getTodayNormalized(),
+            healthData: {},
+            userProfile: null,
+            currentTab: 'calendar'
+        };
+    
+        // --- CONSTANTS & CONFIG ---
+        const mainContent = document.getElementById('main-content');
+        const currentDateDisplay = document.getElementById('current-date-display');
+        const mobileAppTitle = document.getElementById('mobile-app-title');
+        const desktopAppTitle = document.getElementById('desktop-app-title');
+        
+        const modalBackdrop = document.getElementById('modal-backdrop');
+        const welcomeModal = document.getElementById('welcome-modal');
+        const welcomeForm = document.getElementById('welcome-form');
+        const addEntryModal = document.getElementById('add-entry-modal');
+        const addEntryFab = document.getElementById('add-entry-fab');
+        const closeAddEntryModal = document.getElementById('close-add-entry-modal');
+        const modalChoiceButtons = document.querySelectorAll('.modal-choice-button');
+        
+        const formModal = document.getElementById('form-modal');
+        const formModalTitle = document.getElementById('form-modal-title');
+        const entryForm = document.getElementById('entry-form');
+        const closeFormModal = document.getElementById('close-form-modal');
+    
+        const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+        const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    
+        const colorGradients = {
+            'blue': 'from-blue-500/10 dark:from-blue-500/60',
+            'purple': 'from-purple-500/10 dark:from-purple-500/60',
+            'red': 'from-red-500/10 dark:from-red-500/60',
+            'yellow': 'from-yellow-500/10 dark:from-yellow-500/60',
+            'teal': 'from-teal-500/10 dark:from-teal-500/60',
+        };
+        
+        const navConfig = [
+            { tab: 'calendar', label: 'Calendário', icon: 'calendar-days' },
+            { tab: 'reminders', label: 'Lembretes', icon: 'bell' },
+            { tab: 'ai_assistant', label: 'Assistente IA', icon: 'bot' },
+            { tab: 'settings', label: 'Perfil', icon: 'user' },
+        ];
+    
+    
+        // --- DATA PERSISTENCE ---
+        const loadData = () => {
+            const data = localStorage.getItem('healthDataV2');
+            state.healthData = data ? JSON.parse(data) : { reminders: [] };
+            const user = localStorage.getItem('healthUserV2');
+            state.userProfile = user ? JSON.parse(user) : null;
+        };
+    
+        const saveData = () => {
+            localStorage.setItem('healthDataV2', JSON.stringify(state.healthData));
+            if(state.userProfile) {
+                localStorage.setItem('healthUserV2', JSON.stringify(state.userProfile));
+            }
+            render(); 
+        };
+        
+        // --- ONBOARDING ---
+        const checkOnboarding = () => {
+            if (!state.userProfile) {
+                openModal(welcomeModal);
+            }
+        };
+        
+        welcomeForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            state.userProfile = {
+                name: formData.get('name'),
+                dob: formData.get('dob')
+            };
+            closeModal(welcomeModal);
+            saveData();
+        });
+    
+        // --- UI RENDERING ---
+        const render = () => {
+            if (!state.userProfile) return;
+            renderDesktopNav();
+            updateNavButtons();
+            updateHeader();
+            updateCurrentDateDisplay();
+            renderTabContent();
+            lucide.createIcons();
+        };
+        
+        const updateHeader = () => {
+            const userName = state.userProfile?.name?.split(' ')[0] || 'Saúde';
+            mobileAppTitle.textContent = `Diário de ${userName}`;
+            desktopAppTitle.textContent = `Diário de ${userName}`;
+        };
+        
+        const renderDesktopNav = () => {
+            const container = document.getElementById('desktop-nav-buttons');
+            container.innerHTML = navConfig.map(item => `
+                <button data-tab="${item.tab}" class="nav-button w-full flex items-center space-x-3 p-3 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700">
+                    <i data-lucide="${item.icon}"></i>
+                    <span>${item.label}</span>
+                </button>
+            `).join('');
             
-            // --- DATE HELPERS ---
-            const toISODateString = (date) => {
-                const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
-            };
-
-            const getTodayNormalized = () => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return today;
-            };
-
-            // --- STATE MANAGEMENT ---
-            let state = {
-                currentDate: getTodayNormalized(),
-                healthData: {},
-                currentTab: 'calendar'
-            };
-
-            // --- CONSTANTS & CONFIG ---
-            const mainContent = document.getElementById('main-content');
-            const currentDateDisplay = document.getElementById('current-date-display');
-            const navButtons = document.querySelectorAll('.nav-button');
-            const addEntryButton = document.querySelector('button[data-tab="add_entry"]');
-            
-            const modalBackdrop = document.getElementById('modal-backdrop');
-            const addEntryModal = document.getElementById('add-entry-modal');
-            const closeAddEntryModal = document.getElementById('close-add-entry-modal');
-            const modalChoiceButtons = document.querySelectorAll('.modal-choice-button');
-            
-            const formModal = document.getElementById('form-modal');
-            const formModalTitle = document.getElementById('form-modal-title');
-            const entryForm = document.getElementById('entry-form');
-            const closeFormModal = document.getElementById('close-form-modal');
-            
-            const themeToggle = document.getElementById('theme-toggle');
-
-            const weekDays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-
-            const colorGradients = {
-                'blue': 'from-blue-500/10 dark:from-blue-500/60',
-                'purple': 'from-purple-500/10 dark:from-purple-500/60',
-                'red': 'from-red-500/10 dark:from-red-500/60',
-                'yellow': 'from-yellow-500/10 dark:from-yellow-500/60'
-            };
-
-            // --- DATA PERSISTENCE ---
-            const loadData = () => {
-                const data = localStorage.getItem('healthDataV1');
-                state.healthData = data ? JSON.parse(data) : {};
-            };
-
-            const saveData = () => {
-                localStorage.setItem('healthDataV1', JSON.stringify(state.healthData));
-                render(); 
-            };
-
-            // --- UI RENDERING ---
-
-            const render = () => {
-                lucide.createIcons();
-                updateCurrentDateDisplay();
-                renderTabContent();
-                updateNavButtons();
-            };
-            
-            const updateNavButtons = () => {
-                navButtons.forEach(btn => {
-                    const isActive = btn.dataset.tab === state.currentTab;
-                    btn.classList.toggle('text-teal-500', isActive);
-                    btn.classList.toggle('dark:text-teal-400', isActive);
-                    btn.classList.toggle('text-slate-500', !isActive);
-                    btn.classList.toggle('dark:text-slate-400', !isActive);
-                });
-            };
-
-            const renderTabContent = () => {
-                mainContent.innerHTML = '';
-                switch (state.currentTab) {
-                    case 'calendar':
-                        mainContent.appendChild(createCalendarView());
-                        mainContent.appendChild(createDataForDateView(state.currentDate));
-                        break;
-                    case 'ai_assistant':
-                        mainContent.appendChild(createAIAssistantView());
-                        break;
-                }
-                lucide.createIcons();
-            };
-            
-            const updateCurrentDateDisplay = () => {
-                currentDateDisplay.textContent = state.currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-            };
-            
-            const createCalendarView = () => {
-                const container = document.createElement('div');
-                container.className = 'bg-white/80 dark:bg-slate-800/80 p-4 sm:p-6 rounded-2xl mb-6 shadow-lg border border-slate-200 dark:border-slate-700';
-                
-                const year = state.currentDate.getFullYear();
-                const month = state.currentDate.getMonth();
-
-                const header = document.createElement('div');
-                header.className = 'flex items-center justify-between mb-4';
-                header.innerHTML = `
-                    <button id="prev-month" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="chevron-left"></i></button>
-                    <h2 class="text-xl font-semibold">${monthNames[month]} ${year}</h2>
-                    <button id="next-month" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="chevron-right"></i></button>
-                `;
-
-                const weekDaysHeader = document.createElement('div');
-                weekDaysHeader.className = 'calendar-grid gap-1 mb-2';
-                weekDays.forEach(day => {
-                    weekDaysHeader.innerHTML += `<div class="text-center text-xs font-bold text-slate-400 dark:text-slate-500">${day}</div>`;
-                });
-
-                const calendarGrid = document.createElement('div');
-                calendarGrid.className = 'calendar-grid gap-1';
-
-                const firstDayOfMonth = new Date(year, month, 1);
-                const lastDayOfMonth = new Date(year, month + 1, 0);
-                const startDay = firstDayOfMonth.getDay();
-
-                for (let i = 0; i < startDay; i++) {
-                    calendarGrid.innerHTML += '<div></div>';
-                }
-
-                for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-                    const date = new Date(year, month, day);
-                    const dateStr = toISODateString(date);
-                    const isSelected = toISODateString(state.currentDate) === dateStr;
-                    const isToday = toISODateString(getTodayNormalized()) === dateStr;
-                    const hasData = state.healthData[dateStr];
-
-                    let classes = 'day-cell text-center p-2 rounded-full cursor-pointer transition-colors duration-200 ';
-                    if (isSelected) {
-                        classes += 'bg-gradient-to-br from-teal-500 to-cyan-400 text-white font-bold ring-2 ring-cyan-300 ';
-                    } else if (isToday) {
-                        classes += 'bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-white ';
-                    } else {
-                        classes += 'hover:bg-slate-100 dark:hover:bg-slate-700 ';
-                    }
-                    
-                    let dataIndicator = hasData ? '<div class="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full mx-auto mt-1"></div>' : '';
-
-                    calendarGrid.innerHTML += `<div data-date="${dateStr}" class="${classes}">${day}${dataIndicator}</div>`;
-                }
-                
-                container.appendChild(header);
-                container.appendChild(weekDaysHeader);
-                container.appendChild(calendarGrid);
-
-                return container;
-            };
-            
-            const createDataForDateView = (date) => {
-                const dateStr = toISODateString(date);
-                const data = state.healthData[dateStr] || {};
-                const container = document.createElement('div');
-                container.id = 'daily-data-view';
-                container.className = 'space-y-4 px-2';
-
-                const sectionsHTML = [];
-
-                if (data.medications?.length) {
-                    const medicationContent = data.medications.map(item => `
-                        <div class="flex justify-between items-center">
-                            <span>${item.name} <span class="text-xs text-slate-500 dark:text-slate-400">${item.dosage || ''}</span></span>
-                            <div class="flex items-center space-x-2">
-                                <button data-action="toggle-med" data-id="${item.id}" class="${item.taken ? 'text-green-500 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'} hover:text-green-500 dark:hover:text-green-300"><i data-lucide="check-circle-2"></i></button>
-                                <button data-action="delete-item" data-type="medications" data-id="${item.id}" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                            </div>
-                        </div>
-                    `);
-                    sectionsHTML.push(createSection('Remédios', 'pilcrow', 'blue', medicationContent));
-                }
-
-                if (data.appointments?.length) {
-                    const appointmentContent = data.appointments.map(item => `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p>${item.specialty}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">${item.doctor || ''} - ${item.notes || ''}</p>
-                            </div>
-                            <button data-action="delete-item" data-type="appointments" data-id="${item.id}" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    `);
-                    sectionsHTML.push(createSection('Consultas', 'stethoscope', 'purple', appointmentContent));
-                }
-
-                if (data.symptoms?.length) {
-                    const symptomContent = data.symptoms.map(item => `
-                        <div class="flex justify-between items-center">
-                            <span>${item.name}</span>
-                            <button data-action="delete-item" data-type="symptoms" data-id="${item.id}" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                        </div>
-                    `);
-                    sectionsHTML.push(createSection('Sintomas', 'thermometer', 'red', symptomContent));
-                }
-
-                if (data.diary) {
-                    const diaryContent = `<p class="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">${data.diary}</p>
-                        <button data-action="delete-item" data-type="diary" data-id="diary" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 absolute top-4 right-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-                    `;
-                    sectionsHTML.push(createSection('Diário', 'book-open', 'yellow', diaryContent, 'relative'));
-                }
-                
-                if (sectionsHTML.length > 0) {
-                    container.innerHTML = sectionsHTML.join('');
-                } else {
-                    container.innerHTML = `
-                        <div class="text-center py-10 px-4 bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl">
-                            <i data-lucide="inbox" class="w-16 h-16 mx-auto text-slate-400 dark:text-slate-500 mb-4"></i>
-                            <p class="text-slate-500 dark:text-slate-400">Nenhum registro para este dia.</p>
-                             <p class="text-slate-400 dark:text-slate-500 text-sm">Use o botão '+' para adicionar.</p>
-                        </div>`;
-                }
-
-                return container;
-            };
-
-            const createSection = (title, icon, color, content, extraClasses = '') => {
-                const gradientClass = colorGradients[color] || 'from-slate-500/10 dark:from-slate-500/60';
-                return `
-                    <div class="bg-gradient-to-br ${gradientClass} to-transparent p-0.5 rounded-2xl shadow-lg ${extraClasses}">
-                         <div class="bg-white/80 dark:bg-slate-800 rounded-[15px] p-4 h-full">
-                            <h3 class="flex items-center text-lg font-semibold mb-3 text-${color}-500 dark:text-${color}-400">
-                                <i data-lucide="${icon}" class="w-5 h-5 mr-2"></i>
-                                ${title}
-                            </h3>
-                            <div class="space-y-3 text-sm">${Array.isArray(content) ? content.join('<hr class="border-slate-200 dark:border-slate-700">') : content}</div>
-                         </div>
-                    </div>`;
-            };
-            
-            const createAIAssistantView = () => {
-                const container = document.createElement('div');
-                container.className = 'p-4 space-y-4';
-                container.innerHTML = `
-                    <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-lg">
-                        <i data-lucide="sparkles" class="w-16 h-16 mx-auto text-teal-500 dark:text-teal-400 mb-4"></i>
-                        <h2 class="text-2xl font-bold mb-2">Assistente de Saúde IA</h2>
-                        <p class="text-slate-500 dark:text-slate-400">Pergunte-me sobre um medicamento para saber para que ele serve.</p>
-                    </div>
-                    <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-lg">
-                        <div class="flex space-x-2">
-                            <input type="text" id="ai-prompt" placeholder="Digite o nome de um remédio..." class="flex-1 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none placeholder-slate-400 dark:placeholder-slate-500">
-                            <button id="ai-submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors">
-                                <i data-lucide="send"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div id="ai-response-container" class="bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl min-h-[120px] shadow-lg">
-                         <div class="flex space-x-3">
-                            <div class="p-2 bg-gradient-to-br from-teal-500 to-cyan-400 rounded-full h-fit">
-                                <i data-lucide="bot" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <div id="ai-response" class="text-slate-700 dark:text-slate-300 whitespace-pre-wrap flex-1 pt-1">Aguardando sua pergunta...</div>
-                         </div>
-                    </div>
-                `;
-                return container;
-            };
-
-            // --- MODAL HANDLING ---
-            const openModal = (modal) => {
-                modalBackdrop.classList.remove('hidden');
-                modal.classList.remove('hidden');
-                modal.classList.add('flex');
-            };
-
-            const closeModal = (modal) => {
-                modalBackdrop.classList.add('hidden');
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            };
-
-            const openFormModal = (type) => {
-                let title = '';
-                let formContent = '';
-                
-                switch (type) {
-                    case 'medication':
-                        title = 'Adicionar Remédio';
-                        formContent = `
-                            <input type="text" name="name" placeholder="Nome do remédio" class="form-input" required>
-                            <input type="text" name="dosage" placeholder="Dosagem (ex: 500mg, 1 comprimido)" class="form-input">
-                            <button type="submit" class="btn-primary">Salvar</button>
-                        `;
-                        break;
-                    case 'appointment':
-                        title = 'Adicionar Consulta';
-                        formContent = `
-                            <input type="text" name="specialty" placeholder="Especialidade (ex: Cardiologista)" class="form-input" required>
-                            <input type="text" name="doctor" placeholder="Nome do(a) médico(a)" class="form-input">
-                            <textarea name="notes" placeholder="Notas da consulta..." class="form-input"></textarea>
-                            <button type="submit" class="btn-primary">Salvar</button>
-                        `;
-                        break;
-                    case 'symptom':
-                        title = 'Adicionar Sintoma';
-                        formContent = `
-                            <input type="text" name="name" placeholder="Qual sintoma você sentiu?" class="form-input" required>
-                            <button type="submit" class="btn-primary">Salvar</button>
-                        `;
-                        break;
-                    case 'diary':
-                        title = 'Escrever no Diário';
-                        const currentText = state.healthData[toISODateString(state.currentDate)]?.diary || '';
-                        formContent = `
-                            <textarea name="entry" placeholder="Como você está se sentindo hoje?" class="form-input" rows="6">${currentText}</textarea>
-                            <button type="submit" class="btn-primary">Salvar</button>
-                        `;
-                        break;
-                }
-                
-                formModalTitle.textContent = title;
-                entryForm.innerHTML = formContent.replace(/class="form-input"/g, 'class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none placeholder-slate-400 dark:placeholder-slate-500"')
-                                                 .replace(/class="btn-primary"/g, 'class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"');
-                
-                entryForm.dataset.type = type;
-                closeModal(addEntryModal);
-                openModal(formModal);
-            };
-
-            // --- EVENT LISTENERS ---
-            navButtons.forEach(button => {
+            document.querySelectorAll('#desktop-nav-buttons .nav-button').forEach(button => {
                 button.addEventListener('click', () => {
                     state.currentTab = button.dataset.tab;
                     render();
                 });
             });
+        };
+        
+        const updateNavButtons = () => {
+            document.querySelectorAll('.nav-button').forEach(btn => {
+                const isActive = btn.dataset.tab === state.currentTab;
+                const isAddButton = btn.dataset.tab === 'add_entry';
+                if (isAddButton) return;
+                
+                btn.classList.toggle('bg-slate-200', isActive);
+                btn.classList.toggle('dark:bg-slate-700', isActive);
+                btn.classList.toggle('text-teal-500', isActive);
+                btn.classList.toggle('dark:text-teal-400', isActive);
+                
+                btn.classList.toggle('text-slate-500', !isActive);
+                btn.classList.toggle('dark:text-slate-400', !isActive);
+            });
+        };
+    
+        const renderTabContent = () => {
+            mainContent.innerHTML = '';
+            switch (state.currentTab) {
+                case 'calendar':
+                    mainContent.appendChild(createCalendarView());
+                    mainContent.appendChild(createDataForDateView(state.currentDate));
+                    break;
+                case 'reminders':
+                    mainContent.appendChild(createRemindersView());
+                    break;
+                case 'ai_assistant':
+                    mainContent.appendChild(createAIAssistantView());
+                    break;
+                case 'settings':
+                    mainContent.appendChild(createSettingsView());
+                    break;
+            }
+            lucide.createIcons();
+        };
+        
+        const updateCurrentDateDisplay = () => {
+            currentDateDisplay.textContent = state.currentDate.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
+        };
+        
+        const createCalendarView = () => {
+            const container = document.createElement('div');
+            container.className = 'bg-white/80 dark:bg-slate-800/80 p-4 sm:p-6 rounded-2xl mb-6 shadow-lg border border-slate-200 dark:border-slate-700';
             
-            addEntryButton.addEventListener('click', () => openModal(addEntryModal));
-            closeAddEntryModal.addEventListener('click', () => closeModal(addEntryModal));
-            modalBackdrop.addEventListener('click', () => {
-                closeModal(addEntryModal);
-                closeModal(formModal);
+            const year = state.currentDate.getFullYear();
+            const month = state.currentDate.getMonth();
+    
+            const header = document.createElement('div');
+            header.className = 'flex items-center justify-between mb-4';
+            header.innerHTML = `
+                <button id="prev-month" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="chevron-left"></i></button>
+                <h2 class="text-xl font-semibold">${monthNames[month]} ${year}</h2>
+                <button id="next-month" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="chevron-right"></i></button>
+            `;
+    
+            const weekDaysHeader = document.createElement('div');
+            weekDaysHeader.className = 'calendar-grid gap-1 mb-2';
+            weekDays.forEach(day => {
+                weekDaysHeader.innerHTML += `<div class="text-center text-xs font-bold text-slate-400 dark:text-slate-500">${day}</div>`;
             });
-            closeFormModal.addEventListener('click', () => closeModal(formModal));
-
-            modalChoiceButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    openFormModal(button.dataset.form);
-                });
-            });
-
-            themeToggle.addEventListener('click', () => {
-                document.documentElement.classList.toggle('dark');
-                if (document.documentElement.classList.contains('dark')) {
-                    localStorage.setItem('theme', 'dark');
+    
+            const calendarGrid = document.createElement('div');
+            calendarGrid.className = 'calendar-grid gap-1';
+    
+            const firstDayOfMonth = new Date(year, month, 1);
+            const lastDayOfMonth = new Date(year, month + 1, 0);
+            const startDay = firstDayOfMonth.getDay();
+    
+            for (let i = 0; i < startDay; i++) {
+                calendarGrid.innerHTML += '<div></div>';
+            }
+    
+            for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
+                const date = new Date(year, month, day);
+                const dateStr = toISODateString(date);
+                const isSelected = toISODateString(state.currentDate) === dateStr;
+                const isToday = toISODateString(getTodayNormalized()) === dateStr;
+                const hasData = state.healthData[dateStr] && Object.keys(state.healthData[dateStr]).length > 0;
+                const hasReminder = state.healthData.reminders?.some(r => r.date.startsWith(dateStr));
+    
+                let classes = 'day-cell text-center p-2 rounded-full cursor-pointer transition-colors duration-200 relative ';
+                if (isSelected) {
+                    classes += 'bg-gradient-to-br from-teal-500 to-cyan-400 text-white font-bold ring-2 ring-cyan-300 ';
+                } else if (isToday) {
+                    classes += 'bg-slate-200 dark:bg-slate-600 text-slate-800 dark:text-white ';
                 } else {
-                    localStorage.setItem('theme', 'light');
-                }
-            });
-            
-            mainContent.addEventListener('click', (e) => {
-                const dayCell = e.target.closest('.day-cell');
-                if (dayCell) {
-                    const [year, month, day] = dayCell.dataset.date.split('-').map(Number);
-                    state.currentDate = new Date(year, month - 1, day);
-                    render();
-                }
-
-                if (e.target.closest('#prev-month')) {
-                    const currentDay = state.currentDate.getDate();
-                    state.currentDate.setMonth(state.currentDate.getMonth() - 1);
-                    if (state.currentDate.getDate() !== currentDay) {
-                        state.currentDate.setDate(0);
-                    }
-                    render();
-                }
-
-                if (e.target.closest('#next-month')) {
-                    const currentDay = state.currentDate.getDate();
-                    state.currentDate.setMonth(state.currentDate.getMonth() + 1);
-                    if (state.currentDate.getDate() !== currentDay) {
-                       state.currentDate.setDate(0);
-                    }
-                    render();
+                    classes += 'hover:bg-slate-100 dark:hover:bg-slate-700 ';
                 }
                 
-                const actionButton = e.target.closest('button[data-action]');
-                if (actionButton) {
-                    handleDataAction(actionButton);
-                }
-
-                const aiSubmitButton = e.target.closest('#ai-submit');
-                if (aiSubmitButton) {
-                    handleAIAssistant();
-                }
-            });
+                let indicators = '<div class="flex justify-center items-center space-x-1 absolute bottom-1 left-0 right-0">';
+                if(hasData) indicators += '<div class="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full"></div>';
+                if(hasReminder) indicators += '<div class="w-1.5 h-1.5 bg-purple-500 dark:bg-purple-400 rounded-full"></div>';
+                indicators += '</div>';
+    
+                calendarGrid.innerHTML += `<div data-date="${dateStr}" class="${classes}">${day}${indicators}</div>`;
+            }
             
-            entryForm.addEventListener('submit', (e) => {
+            container.appendChild(header);
+            container.appendChild(weekDaysHeader);
+            container.appendChild(calendarGrid);
+    
+            return container;
+        };
+        
+        const createDataForDateView = (date) => {
+            const dateStr = toISODateString(date);
+            const data = state.healthData[dateStr] || {};
+            const container = document.createElement('div');
+            container.id = 'daily-data-view';
+            container.className = 'space-y-4 px-2';
+    
+            const sectionsHTML = [];
+    
+            if (data.medications?.length) {
+                const medicationContent = data.medications.map(item => {
+                    const reminder = state.healthData.reminders?.find(r => r.originalId === item.id);
+                    const reminderHtml = reminder ? `<p class="text-xs text-purple-600 dark:text-purple-400 mt-1 flex items-center"><i data-lucide="bell" class="w-3 h-3 mr-1"></i>Próxima dose: ${formatReminderDate(reminder.date)}</p>` : '';
+                    return `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span>${item.name} <span class="text-xs text-slate-500 dark:text-slate-400">${item.dosage || ''}</span></span>
+                                ${reminderHtml}
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button data-action="toggle-med" data-id="${item.id}" class="${item.taken ? 'text-green-500 dark:text-green-400' : 'text-slate-400 dark:text-slate-500'} hover:text-green-500 dark:hover:text-green-300"><i data-lucide="check-circle-2"></i></button>
+                                <button data-action="delete-item" data-type="medications" data-id="${item.id}" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    `
+                }).join('<hr class="border-slate-200 dark:border-slate-700">');
+                sectionsHTML.push(createSection('Remédios', 'pilcrow', 'blue', medicationContent));
+            }
+    
+            if (data.appointments?.length) {
+                const appointmentContent = data.appointments.map(item => {
+                     const reminder = state.healthData.reminders?.find(r => r.originalId === item.id);
+                    const reminderHtml = reminder ? `<p class="text-xs text-purple-600 dark:text-purple-400 mt-1 flex items-center"><i data-lucide="bell" class="w-3 h-3 mr-1"></i>Próxima consulta: ${formatReminderDate(reminder.date)}</p>` : '';
+                    return `
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p>${item.specialty}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">${item.doctor || ''} - ${item.notes || ''}</p>
+                                ${reminderHtml}
+                            </div>
+                            <button data-action="delete-item" data-type="appointments" data-id="${item.id}" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `
+                }).join('<hr class="border-slate-200 dark:border-slate-700">');
+                sectionsHTML.push(createSection('Consultas', 'stethoscope', 'purple', appointmentContent));
+            }
+    
+            if (data.symptoms?.length) {
+                 const symptomContent = data.symptoms.map(item => `
+                    <div class="flex justify-between items-center">
+                        <span>${item.name}</span>
+                        <button data-action="delete-item" data-type="symptoms" data-id="${item.id}" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                `).join('<hr class="border-slate-200 dark:border-slate-700">');
+                sectionsHTML.push(createSection('Sintomas', 'thermometer', 'red', symptomContent));
+            }
+            
+            if (data.diary) {
+                const diaryContent = `<p class="text-slate-700 dark:text-slate-300 whitespace-pre-wrap">${data.diary}</p>
+                    <button data-action="delete-item" data-type="diary" data-id="diary" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 absolute top-4 right-4"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                `;
+                sectionsHTML.push(createSection('Diário', 'book-open', 'yellow', diaryContent, 'relative'));
+            }
+            
+            if (sectionsHTML.length > 0) {
+                container.innerHTML = sectionsHTML.join('');
+            } else {
+                container.innerHTML = `
+                    <div class="text-center py-10 px-4 bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl">
+                        <i data-lucide="inbox" class="w-16 h-16 mx-auto text-slate-400 dark:text-slate-500 mb-4"></i>
+                        <p class="text-slate-500 dark:text-slate-400">Nenhum registro para este dia.</p>
+                         <p class="text-slate-400 dark:text-slate-500 text-sm">Use o botão '+' para adicionar.</p>
+                    </div>`;
+            }
+    
+            return container;
+        };
+    
+        const createSection = (title, icon, color, content, extraClasses = '') => {
+            const gradientClass = colorGradients[color] || 'from-slate-500/10 dark:from-slate-500/60';
+            return `
+                <div class="bg-gradient-to-br ${gradientClass} to-transparent p-0.5 rounded-2xl shadow-lg ${extraClasses}">
+                     <div class="bg-white/80 dark:bg-slate-800 rounded-[15px] p-4 h-full">
+                        <h3 class="flex items-center text-lg font-semibold mb-3 text-${color}-500 dark:text-${color}-400">
+                            <i data-lucide="${icon}" class="w-5 h-5 mr-2"></i>
+                            ${title}
+                        </h3>
+                        <div class="space-y-3 text-sm">${Array.isArray(content) ? content : content}</div>
+                     </div>
+                </div>`;
+        };
+        
+        const createRemindersView = () => {
+            const container = document.createElement('div');
+            container.className = 'p-4 space-y-4';
+            
+            const reminders = state.healthData.reminders?.sort((a, b) => new Date(a.date) - new Date(b.date)) || [];
+    
+            let content;
+            if (reminders.length === 0) {
+                content = `
+                    <div class="text-center py-10 px-4 bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl">
+                        <i data-lucide="bell-off" class="w-16 h-16 mx-auto text-slate-400 dark:text-slate-500 mb-4"></i>
+                        <p class="text-slate-500 dark:text-slate-400">Você não tem lembretes futuros.</p>
+                         <p class="text-slate-400 dark:text-slate-500 text-sm">Agende uma próxima dose ou consulta ao adicioná-las.</p>
+                    </div>
+                `;
+            } else {
+                const reminderItems = reminders.map(item => {
+                    const icon = item.type === 'medication' ? 'pilcrow' : 'stethoscope';
+                    const color = item.type === 'medication' ? 'blue' : 'purple';
+                    return `
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-start space-x-4">
+                                <div class="p-2 bg-${color}-100 dark:bg-${color}-900/50 rounded-full mt-1">
+                                    <i data-lucide="${icon}" class="w-5 h-5 text-${color}-500 dark:text-${color}-400"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold">${item.name}</p>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400">${formatReminderDate(item.date)}</p>
+                                </div>
+                            </div>
+                            <button data-action="delete-reminder" data-id="${item.id}" class="text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    `;
+                }).join('<hr class="border-slate-200 dark:border-slate-700 my-3">');
+                content = createSection('Próximos Lembretes', 'bell', 'teal', reminderItems);
+            }
+            
+            container.innerHTML = content;
+            return container;
+        };
+        
+        const createAIAssistantView = () => {
+            const container = document.createElement('div');
+            container.className = 'p-4 space-y-4';
+            container.innerHTML = `
+                <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl text-center shadow-lg">
+                    <i data-lucide="sparkles" class="w-16 h-16 mx-auto text-teal-500 dark:text-teal-400 mb-4"></i>
+                    <h2 class="text-2xl font-bold mb-2">Assistente de Saúde IA</h2>
+                    <p class="text-slate-500 dark:text-slate-400">Pergunte-me sobre um medicamento para saber para que ele serve.</p>
+                </div>
+                <div class="bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-lg">
+                    <div class="flex space-x-2">
+                        <input type="text" id="ai-prompt" placeholder="Digite o nome de um remédio..." class="flex-1 bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none placeholder-slate-400 dark:placeholder-slate-500">
+                        <button id="ai-submit" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors">
+                            <i data-lucide="send"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="ai-response-container" class="bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl min-h-[120px] shadow-lg">
+                     <div class="flex space-x-3">
+                        <div class="p-2 bg-gradient-to-br from-teal-500 to-cyan-400 rounded-full h-fit">
+                            <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+                        </div>
+                        <div id="ai-response" class="text-slate-700 dark:text-slate-300 whitespace-pre-wrap flex-1 pt-1">Aguardando sua pergunta...</div>
+                     </div>
+                </div>
+            `;
+            return container;
+        };
+        
+        const createSettingsView = () => {
+            const container = document.createElement('div');
+            container.className = 'p-4 space-y-4';
+            if (!state.userProfile) return container;
+            
+            container.innerHTML = `
+                <div class="bg-white/80 dark:bg-slate-800/80 p-4 sm:p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                    <h2 class="text-2xl font-bold mb-4">Perfil</h2>
+                    <form id="profile-form" class="space-y-3">
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Nome</label>
+                             <input type="text" name="name" value="${state.userProfile.name}" class="mt-1 w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 text-lg">
+                        </div>
+                        <div>
+                            <label class="text-sm font-medium text-slate-500 dark:text-slate-400">Data de Nascimento</label>
+                            <input type="date" name="dob" value="${state.userProfile.dob}" class="mt-1 w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 text-lg">
+                        </div>
+                        <button type="submit" class="w-full mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors">Salvar Alterações</button>
+                    </form>
+                     <button id="logout-button" class="mt-6 w-full text-red-500 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 p-2 rounded-lg text-sm">
+                        Apagar dados e sair
+                    </button>
+                </div>
+            `;
+            return container;
+        };
+    
+        // --- MODAL HANDLING ---
+        const openModal = (modal) => {
+            modalBackdrop.classList.remove('hidden');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+    
+        const closeModal = (modal) => {
+            modalBackdrop.classList.add('hidden');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        };
+    
+        const openFormModal = (type) => {
+            let title = '';
+            let formContent = '';
+            const formInputStyle = 'class="w-full bg-slate-100 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg px-4 py-2 focus:ring-2 focus:ring-teal-500 focus:outline-none placeholder-slate-400 dark:placeholder-slate-500"';
+            const btnPrimaryStyle = 'class="w-full bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"';
+            
+            switch (type) {
+                case 'medication':
+                    title = 'Adicionar Remédio';
+                    formContent = `
+                        <input type="text" name="name" placeholder="Nome do remédio" ${formInputStyle} required>
+                        <input type="text" name="dosage" placeholder="Dosagem (ex: 500mg)" ${formInputStyle}>
+                        <label class="text-sm text-slate-500 dark:text-slate-400">Agendar próxima dose? (Opcional)</label>
+                        <input type="datetime-local" name="reminderDate" ${formInputStyle}>
+                        <button type="submit" ${btnPrimaryStyle}>Salvar</button>
+                    `;
+                    break;
+                case 'appointment':
+                    title = 'Adicionar Consulta';
+                    formContent = `
+                        <input type="text" name="specialty" placeholder="Especialidade" ${formInputStyle} required>
+                        <input type="text" name="doctor" placeholder="Nome do(a) médico(a)" ${formInputStyle}>
+                        <textarea name="notes" placeholder="Notas..." ${formInputStyle}></textarea>
+                        <label class="text-sm text-slate-500 dark:text-slate-400">Agendar próxima consulta? (Opcional)</label>
+                        <input type="datetime-local" name="reminderDate" ${formInputStyle}>
+                        <button type="submit" ${btnPrimaryStyle}>Salvar</button>
+                    `;
+                    break;
+                 case 'symptom':
+                    title = 'Adicionar Sintoma';
+                    formContent = `
+                        <input type="text" name="name" placeholder="Qual sintoma você sentiu?" ${formInputStyle} required>
+                        <button type="submit" ${btnPrimaryStyle}>Salvar</button>
+                    `;
+                    break;
+                case 'diary':
+                    title = 'Escrever no Diário';
+                    const currentText = state.healthData[toISODateString(state.currentDate)]?.diary || '';
+                    formContent = `
+                        <textarea name="entry" placeholder="Como você está se sentindo hoje?" class="form-input" rows="6">${currentText}</textarea>
+                        <button type="submit" ${btnPrimaryStyle}>Salvar</button>
+                    `;
+                    break;
+            }
+            
+            formModalTitle.textContent = title;
+            entryForm.innerHTML = formContent
+                .replace(/class="form-input"/g, formInputStyle)
+                .replace(/class="btn-primary"/g, btnPrimaryStyle);
+
+            entryForm.dataset.type = type;
+            closeModal(addEntryModal);
+            openModal(formModal);
+        };
+    
+        // --- EVENT LISTENERS ---
+        document.body.addEventListener('click', (e) => {
+            const navButton = e.target.closest('.nav-button');
+            if (navButton) {
+                const tab = navButton.dataset.tab;
+                if (tab === 'add_entry') {
+                    openModal(addEntryModal);
+                } else if(tab){
+                    state.currentTab = tab;
+                    render();
+                }
+            }
+            
+            const themeButton = e.target.closest('#theme-toggle') || e.target.closest('#theme-toggle-desktop');
+            if (themeButton) {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            }
+    
+            if (e.target.closest('#logout-button')) {
+                if (confirm('Tem certeza que deseja apagar todos os seus dados? Esta ação não pode ser desfeita.')) {
+                    localStorage.removeItem('healthDataV2');
+                    localStorage.removeItem('healthUserV2');
+                    window.location.reload();
+                }
+            }
+        });
+        
+        addEntryFab.addEventListener('click', () => openModal(addEntryModal));
+        
+        closeAddEntryModal.addEventListener('click', () => closeModal(addEntryModal));
+        modalBackdrop.addEventListener('click', () => {
+            closeModal(addEntryModal);
+            closeModal(formModal);
+        });
+        closeFormModal.addEventListener('click', () => closeModal(formModal));
+    
+        modalChoiceButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                openFormModal(button.dataset.form);
+            });
+        });
+        
+        mainContent.addEventListener('click', (e) => {
+            const dayCell = e.target.closest('.day-cell');
+            if (dayCell) {
+                const [year, month, day] = dayCell.dataset.date.split('-').map(Number);
+                state.currentDate = new Date(year, month - 1, day);
+                render();
+                return;
+            }
+
+            if (e.target.closest('#prev-month')) {
+                state.currentDate.setMonth(state.currentDate.getMonth() - 1);
+                render();
+                return;
+            }
+
+            if (e.target.closest('#next-month')) {
+                state.currentDate.setMonth(state.currentDate.getMonth() + 1);
+                render();
+                return;
+            }
+            
+            const actionButton = e.target.closest('button[data-action]');
+            if (actionButton) {
+                handleDataAction(actionButton);
+                return;
+            }
+
+            const aiSubmitButton = e.target.closest('#ai-submit');
+            if (aiSubmitButton) {
+                handleAIAssistant();
+                return;
+            }
+        });
+        
+        mainContent.addEventListener('submit', e => {
+             if(e.target.id === 'profile-form') {
                 e.preventDefault();
                 const formData = new FormData(e.target);
-                const type = e.target.dataset.type;
-                const dateStr = toISODateString(state.currentDate);
-
-                if (!state.healthData[dateStr]) {
-                    state.healthData[dateStr] = {};
-                }
-
-                const entry = { id: Date.now() };
-                formData.forEach((value, key) => {
-                    if (value.trim()) { 
-                        entry[key] = value.trim();
-                    }
-                });
-
-                if (Object.keys(entry).length <= 1 && type !== 'diary') return;
-                
-                if(type === 'diary' && entry.entry) {
-                    state.healthData[dateStr].diary = entry.entry;
-                } else if (type !== 'diary') {
-                    const pluralType = type + 's';
-                    if (!state.healthData[dateStr][pluralType]) {
-                        state.healthData[dateStr][pluralType] = [];
-                    }
-                    if (type === 'medication') entry.taken = false;
-                    state.healthData[dateStr][pluralType].push(entry);
-                }
-
+                state.userProfile.name = formData.get('name');
+                state.userProfile.dob = formData.get('dob');
                 saveData();
-                closeModal(formModal);
+                alert('Perfil atualizado com sucesso!');
+            }
+        });
+        
+        entryForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const type = e.target.dataset.type;
+            const dateStr = toISODateString(state.currentDate);
+    
+            if (!state.healthData[dateStr]) state.healthData[dateStr] = {};
+    
+            const entry = { id: Date.now() };
+            let reminderDate = null;
+            formData.forEach((value, key) => {
+                if(key === 'reminderDate' && value) {
+                    reminderDate = value;
+                } else if (value.trim()) { 
+                    entry[key] = value.trim();
+                }
             });
+    
+            if (Object.keys(entry).length <= 1 && type !== 'diary') return;
             
-            const handleDataAction = (button) => {
-                const { action, id, type } = button.dataset;
-                const dateStr = toISODateString(state.currentDate);
+            if(type === 'diary' && entry.entry) {
+                 state.healthData[dateStr].diary = entry.entry;
+            } else if (type !== 'diary') {
+                const pluralType = type + 's';
+                if (!state.healthData[dateStr][pluralType]) {
+                    state.healthData[dateStr][pluralType] = [];
+                }
+                if (type === 'medication') entry.taken = false;
+                state.healthData[dateStr][pluralType].push(entry);
+            }
+    
+            if (reminderDate) {
+                if (!state.healthData.reminders) state.healthData.reminders = [];
+                state.healthData.reminders = state.healthData.reminders.filter(r => r.originalId !== entry.id);
+                state.healthData.reminders.push({
+                    id: Date.now(),
+                    originalId: entry.id,
+                    originalDate: dateStr,
+                    type: type,
+                    name: entry.name || entry.specialty,
+                    date: reminderDate
+                });
+            }
+    
+            saveData();
+            closeModal(formModal);
+        });
+        
+        const handleDataAction = (button) => {
+            const { action, id, type } = button.dataset;
+            const dateStr = toISODateString(state.currentDate);
+
+            if (action === 'delete-reminder') {
+                state.healthData.reminders = state.healthData.reminders.filter(r => r.id != id);
+            } else {
                 const dayData = state.healthData[dateStr];
-
                 if (!dayData) return;
-
+                
                 if (action === 'delete-item') {
                     if (type === 'diary') {
                         delete dayData.diary;
                     } else if (dayData[type]) {
                         dayData[type] = dayData[type].filter(item => item.id != id);
+                        if (state.healthData.reminders) {
+                            state.healthData.reminders = state.healthData.reminders.filter(r => r.originalId != id);
+                        }
                         if (dayData[type].length === 0) {
                             delete dayData[type];
                         }
@@ -614,17 +866,18 @@
                         delete state.healthData[dateStr];
                     }
                 }
-
+    
                 if (action === 'toggle-med') {
                     const med = dayData.medications.find(m => m.id == id);
                     if (med) med.taken = !med.taken;
                 }
+            }
 
-                saveData();
-            };
+            saveData();
+        };
 
-            const handleAIAssistant = async () => {
-                const promptInput = document.getElementById('ai-prompt');
+        const handleAIAssistant = async () => {
+            const promptInput = document.getElementById('ai-prompt');
                 const responseDiv = document.getElementById('ai-response');
                 const submitButton = document.getElementById('ai-submit');
                 const medicationName = promptInput.value.trim();
@@ -673,13 +926,15 @@
                 } finally {
                     submitButton.disabled = false;
                 }
-            };
-            
-            // --- INITIALIZATION ---
-            loadData();
-            render();
-        });
+        };
+        
+        // --- INITIALIZATION ---
+        loadData();
+        checkOnboarding();
+        if (state.userProfile) {
+          render();
+        }
+    });
     </script>
 </body>
 </html>
-
